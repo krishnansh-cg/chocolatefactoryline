@@ -1,0 +1,699 @@
+.meera-booting {
+  background-image: none !important;
+}
+
+.meera-booting body::after,
+.meera-booting::after {
+  display: none;
+}
+
+.meera-booting #root,
+.meera-booting .robotics-hud {
+  visibility: hidden;
+}
+
+.meera-dialog-open .robotics-hud {
+  visibility: hidden;
+}
+
+.meera-landing[hidden] {
+  display: none;
+}
+
+.meera-landing {
+  position: fixed;
+  z-index: 2147483645;
+  inset: 0;
+  overflow: hidden;
+  background: #14243a url('../assets/backgrounds/title-background-meera.webp') center / cover no-repeat;
+}
+
+.meera-landing,
+.meera-introduction {
+  opacity: 0;
+  transition: opacity 480ms ease-in-out;
+}
+
+.meera-landing.is-visible,
+.meera-introduction.is-visible {
+  opacity: 1;
+}
+
+.meera-landing__shade {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 51% 43%, rgba(16, 20, 38, .68), rgba(16, 20, 38, .13) 53%, transparent 75%),
+    linear-gradient(0deg, rgba(9, 15, 32, .52), transparent 58%);
+}
+
+.meera-landing__content {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: 55%;
+  width: min(64vw, 790px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translate(-50%, -50%);
+}
+
+.meera-landing__logo {
+  display: block;
+  width: 100%;
+  filter: drop-shadow(0 14px 20px rgba(13, 10, 26, .8));
+}
+
+.meera-landing__start {
+  min-width: clamp(220px, 24vw, 370px);
+  min-height: clamp(62px, 7vw, 86px);
+  margin-top: clamp(12px, 2vh, 26px);
+  padding: 12px 32px;
+  border: 0;
+  color: #fff;
+  background: url('../assets/ui/robotics-button.svg') center / 100% 100% no-repeat;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: clamp(17px, 1.6vw, 27px);
+  font-weight: 700;
+  cursor: pointer;
+  filter: drop-shadow(0 8px 9px rgba(0, 0, 0, .35));
+}
+
+/* Loading bar in place of START MISSION until every picture and sound is fetched (js/preloader.js). */
+.meera-landing__loader {
+  display: none;
+  width: min(100%, 460px);
+  margin-top: clamp(14px, 2.4vh, 30px);
+  text-align: center;
+}
+
+.is-preloading .meera-landing__loader { display: block; }
+.is-preloading .meera-landing__start { display: none; }
+
+.meera-landing__loader-track {
+  height: clamp(16px, 2vw, 22px);
+  padding: 3px;
+  overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, .85);
+  border-radius: 999px;
+  background: rgba(16, 12, 36, .72);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, .35);
+}
+
+.meera-landing__loader-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #e31fa4, #ff6fc6 60%, #fee714);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 220ms ease-out;
+}
+
+.meera-landing__loader-label {
+  margin: 10px 0 0;
+  color: #fff;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: clamp(15px, 1.3vw, 20px);
+  font-weight: 700;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, .6);
+}
+
+.meera-landing__start.is-popping-in {
+  animation: meera-start-pop 420ms cubic-bezier(.2, 1.4, .4, 1) both;
+}
+
+@keyframes meera-start-pop {
+  from { opacity: 0; transform: scale(.6); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .meera-landing__loader-fill { transition: none; }
+  .meera-landing__start.is-popping-in { animation: none; }
+}
+
+.meera-landing__start:hover {
+  filter: brightness(1.1) drop-shadow(0 10px 12px rgba(0, 0, 0, .42));
+}
+
+.meera-landing__start:focus-visible {
+  outline: 3px solid #fee714;
+  outline-offset: 3px;
+}
+
+.meera-landing__mascot {
+  position: absolute;
+  z-index: 3;
+  left: max(-15px, 1vw);
+  bottom: 0;
+  width: min(27vw, 420px);
+  max-height: 78vh;
+  object-fit: contain;
+  object-position: center bottom;
+  filter: drop-shadow(0 18px 18px rgba(7, 8, 19, .55));
+}
+
+.meera-title-active .game-shell.phase-intro {
+  width: 100%;
+  min-height: 100dvh;
+  transform: none;
+}
+
+.meera-title-active .mission-start {
+  width: 100%;
+  min-height: 100dvh;
+  background: #14243a url('../assets/backgrounds/title-background-meera.webp') center / cover no-repeat;
+}
+
+.meera-title-active .intro-background,
+.meera-title-active .intro-chocolate,
+.meera-title-active .steam,
+.meera-title-active .robotics-hud {
+  display: none;
+}
+
+.meera-title-active .intro-overlay {
+  background:
+    radial-gradient(ellipse at 51% 43%, rgba(16, 20, 38, .68), rgba(16, 20, 38, .13) 53%, transparent 75%),
+    linear-gradient(0deg, rgba(9, 15, 32, .52), transparent 58%);
+}
+
+.meera-title-active .intro-content {
+  width: min(64vw, 790px);
+  margin-left: 10vw;
+}
+
+.meera-title-active .intro-content .title-art {
+  filter: drop-shadow(0 14px 20px rgba(13, 10, 26, .8));
+}
+
+.meera-title-active .intro-content .hero-button {
+  min-width: clamp(220px, 24vw, 370px);
+  min-height: clamp(62px, 7vw, 86px);
+  margin-top: clamp(12px, 2vh, 26px);
+  font-size: clamp(17px, 1.6vw, 27px);
+}
+
+.meera-title-active .intro-mascot {
+  left: max(-15px, 1vw);
+  right: auto;
+  bottom: 0;
+  top: auto;
+  width: min(27vw, 420px);
+  max-height: 78vh;
+  object-fit: contain;
+  object-position: center bottom;
+  filter: drop-shadow(0 18px 18px rgba(7, 8, 19, .55));
+}
+
+.meera-introduction[hidden] {
+  display: none;
+}
+
+.meera-introduction {
+  position: fixed;
+  z-index: 2147483646;
+  inset: 0;
+  display: grid;
+  grid-template-columns: minmax(200px, 35%) minmax(0, 1fr);
+  align-items: end;
+  gap: clamp(12px, 3vw, 55px);
+  padding: clamp(20px, 4vw, 70px);
+  overflow: hidden;
+  background:
+    linear-gradient(90deg, rgba(12, 17, 34, .5), rgba(12, 17, 34, .76)),
+    url('../assets/backgrounds/title-background-meera.webp') center / cover no-repeat;
+  font-family: 'Chakra Petch', sans-serif;
+}
+
+.meera-introduction__mascot {
+  width: min(100%, 560px);
+  max-height: 88vh;
+  align-self: end;
+  justify-self: center;
+  object-fit: contain;
+  object-position: bottom;
+  filter: drop-shadow(0 20px 20px rgba(0, 0, 0, .5));
+}
+
+.meera-introduction__card {
+  width: min(100%, 890px);
+  align-self: center;
+  padding: clamp(24px, 3.3vw, 58px);
+  color: #fff;
+  border: 2px solid #91b57a;
+  border-radius: 28px;
+  background: linear-gradient(145deg, rgba(26, 39, 59, .96), rgba(16, 25, 45, .98));
+  box-shadow: 0 22px 65px rgba(0, 0, 0, .45), inset 0 1px rgba(255, 255, 255, .16);
+}
+
+.meera-introduction__eyebrow {
+  display: block;
+  margin-bottom: 12px;
+  color: #ffd68b;
+  font-size: clamp(12px, 1.25vw, 18px);
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+.meera-introduction__card h2 {
+  margin: 0 0 12px;
+  color: #fff;
+  font-size: clamp(34px, 4vw, 68px);
+  line-height: 1.08;
+  letter-spacing: -.025em;
+}
+
+.meera-introduction__card p {
+  max-width: 24ch;
+  margin: 0 0 clamp(20px, 3vh, 36px);
+  color: #fff3df;
+  font-size: clamp(18px, 2.25vw, 34px);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.meera-introduction__continue {
+  min-width: clamp(230px, 25vw, 390px);
+  min-height: clamp(65px, 8vw, 98px);
+  padding: 12px 32px;
+  border: 0;
+  color: #fff;
+  background: url('../assets/ui/robotics-button.svg') center / 100% 100% no-repeat;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: clamp(19px, 2vw, 32px);
+  font-weight: 700;
+  cursor: pointer;
+  filter: drop-shadow(0 8px 9px rgba(0, 0, 0, .35));
+}
+
+.meera-introduction__continue:hover {
+  filter: brightness(1.1) drop-shadow(0 10px 12px rgba(0, 0, 0, .42));
+}
+
+.meera-introduction__continue:focus-visible {
+  outline: 3px solid #fee714;
+  outline-offset: 3px;
+}
+
+.factory-tutorial[hidden] {
+  display: none;
+}
+
+.factory-tutorial {
+  position: fixed;
+  z-index: 2147483647;
+  inset: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 280ms ease;
+  font-family: 'Chakra Petch', sans-serif;
+}
+
+.factory-tutorial.is-visible {
+  opacity: 1;
+}
+
+.factory-tutorial__spotlight {
+  position: absolute;
+  border: 3px solid #ffda84;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, .04);
+  box-shadow: 0 0 0 200vmax rgba(4, 10, 24, .76), 0 0 28px rgba(255, 218, 132, .85);
+  pointer-events: none;
+  transition: top 300ms ease, left 300ms ease, width 300ms ease, height 300ms ease;
+}
+
+.factory-tutorial__card {
+  position: absolute;
+  width: min(clamp(380px, 28vw, 560px), calc(100vw - 24px));
+  max-height: calc(100dvh - 24px);
+  padding: clamp(17px, 2.4vw, 28px);
+  overflow: auto;
+  color: #fff8e9;
+  border: 2px solid #9fbd83;
+  border-radius: 22px;
+  background: linear-gradient(145deg, #233149, #111a30);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, .5), inset 0 1px rgba(255, 255, 255, .17);
+  transition: top 300ms ease, left 300ms ease;
+}
+
+.factory-tutorial__eyebrow {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: #ffdc94;
+  font-size: clamp(10px, 1vw, 15px);
+  font-weight: 700;
+  letter-spacing: .12em;
+}
+
+.factory-tutorial__card h2 {
+  margin: 13px 0 7px;
+  color: #fff;
+  font-size: clamp(23px, 2vw, 36px);
+  line-height: 1.08;
+}
+
+.factory-tutorial__description {
+  margin: 0 0 19px;
+  color: #f5e6cf;
+  font-size: clamp(14px, 1.1vw, 20px);
+  font-weight: 600;
+  line-height: 1.38;
+}
+
+.factory-tutorial__actions {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.factory-tutorial__actions button {
+  min-height: 45px;
+  border: 0;
+  color: #fff;
+  font-family: inherit;
+  font-size: clamp(11px, 1vw, 16px);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.factory-tutorial__back,
+.factory-tutorial__skip {
+  padding: 0 8px;
+  background: transparent;
+}
+
+.factory-tutorial__back:disabled {
+  opacity: .36;
+  cursor: default;
+}
+
+.factory-tutorial__next {
+  min-width: 122px;
+  margin-left: auto;
+  padding: 0 16px;
+  background: url('../assets/ui/robotics-button.svg') center / 100% 100% no-repeat;
+}
+
+.factory-tutorial__actions button:focus-visible {
+  outline: 3px solid #fee714;
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .meera-landing,
+  .meera-introduction,
+  .factory-tutorial,
+  .factory-tutorial__spotlight,
+  .factory-tutorial__card {
+    transition: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .meera-landing__content {
+    top: 43%;
+    left: 54%;
+    width: min(70vw, 520px);
+  }
+
+  .meera-landing__mascot {
+    left: -3vw;
+    width: min(29vw, 240px);
+    max-height: 68vh;
+  }
+
+  .meera-title-active .intro-content {
+    width: min(70vw, 520px);
+    margin-left: 8vw;
+    margin-top: -10vh;
+  }
+
+  .meera-title-active .intro-mascot {
+    left: -3vw;
+    width: min(29vw, 240px);
+    max-height: 68vh;
+  }
+
+  .meera-introduction {
+    grid-template-columns: minmax(135px, 30%) minmax(0, 1fr);
+    padding: 18px;
+  }
+
+  .meera-introduction__card {
+    padding: 24px;
+  }
+}
+
+@media (max-width: 560px) {
+  .meera-landing__content {
+    top: 37%;
+    left: 50%;
+    width: min(85vw, 460px);
+  }
+
+  .meera-landing__mascot {
+    width: min(46vw, 230px);
+    max-height: 49vh;
+  }
+
+  .meera-title-active .intro-content {
+    width: min(85vw, 460px);
+    margin: -20vh auto 0;
+  }
+
+  .meera-title-active .intro-mascot {
+    width: min(46vw, 230px);
+    max-height: 49vh;
+  }
+
+  .meera-introduction {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 0;
+    padding: 14px;
+  }
+
+  .meera-introduction__mascot {
+    position: relative;
+    top: auto;
+    left: auto;
+    width: min(44vw, 200px);
+    max-height: 32vh;
+    margin: 0 auto -5px;
+  }
+
+  .meera-introduction__card {
+    position: relative;
+    flex: none;
+    padding: 22px;
+  }
+
+  .meera-introduction__card h2 {
+    font-size: clamp(30px, 7vw, 42px);
+  }
+
+  .meera-introduction__card p {
+    font-size: clamp(17px, 4vw, 22px);
+  }
+}
+
+/* Meera's story: one illustrated sentence per slide (see meera-intro.js). */
+.meera-introduction__card {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100dvh - 40px);
+}
+
+.meera-introduction__card h2[hidden] {
+  display: none;
+}
+
+.meera-story {
+  display: grid;
+  gap: clamp(10px, 1.6vh, 18px);
+  min-height: 0;
+}
+
+.meera-story.is-entering {
+  animation: meera-story-in 360ms ease-out both;
+}
+
+.meera-story__art[hidden] {
+  display: none;
+}
+
+.meera-story__image,
+.meera-story__scene {
+  width: 100%;
+  max-height: min(40vh, 400px);
+  aspect-ratio: 16 / 9;
+  border: 2px solid rgba(255, 214, 139, .45);
+  border-radius: 18px;
+  box-shadow: 0 12px 26px rgba(0, 0, 0, .35);
+}
+
+.meera-story__image {
+  display: block;
+  object-fit: cover;
+}
+
+.meera-story__scene {
+  position: relative;
+  overflow: hidden;
+  margin-inline: auto;
+}
+
+.meera-story__scene-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.meera-story__scene.is-jumble .meera-story__scene-bg {
+  filter: brightness(.7) saturate(.85);
+}
+
+.meera-story__piece {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: 19%;
+  aspect-ratio: 1;
+  object-fit: contain;
+  transform: rotate(var(--turn));
+  filter: drop-shadow(0 8px 8px rgba(0, 0, 0, .45));
+  animation: meera-story-tumble 700ms cubic-bezier(.2, .9, .3, 1.2) both;
+  animation-delay: calc(var(--i) * 90ms);
+}
+
+.meera-story__hero {
+  position: absolute;
+  left: 50%;
+  bottom: 6%;
+  width: 42%;
+  transform: translateX(-50%);
+  filter: drop-shadow(0 14px 16px rgba(0, 0, 0, .45));
+}
+
+.meera-introduction__card .meera-story__text {
+  max-width: 34ch;
+  margin: 0;
+  color: #fff3df;
+  font-size: clamp(17px, 1.9vw, 29px);
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.meera-story__text strong {
+  color: #ffd68b;
+}
+
+.meera-story.is-text-only .meera-story__text {
+  max-width: 22ch;
+  padding: clamp(10px, 3vh, 34px) 0;
+  font-size: clamp(24px, 3vw, 44px);
+  line-height: 1.25;
+}
+
+.meera-story__nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: clamp(14px, 2.4vh, 26px);
+}
+
+.meera-story__dots {
+  display: flex;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.meera-story__dots li {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .25);
+}
+
+.meera-story__dots li.is-seen {
+  background: rgba(255, 214, 139, .6);
+}
+
+.meera-story__dots li.is-current {
+  width: 30px;
+  border-radius: 6px;
+  background: #ffd68b;
+}
+
+.meera-story__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.meera-story__back {
+  min-height: clamp(48px, 5.5vw, 66px);
+  padding: 0 22px;
+  border: 2px solid rgba(255, 255, 255, .35);
+  border-radius: 14px;
+  color: #fff;
+  background: rgba(255, 255, 255, .06);
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: clamp(15px, 1.4vw, 22px);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.meera-story__back[hidden] {
+  display: none;
+}
+
+.meera-story__back:focus-visible {
+  outline: 3px solid #fee714;
+  outline-offset: 3px;
+}
+
+.meera-story__actions .meera-introduction__continue {
+  min-width: clamp(170px, 17vw, 290px);
+  min-height: clamp(56px, 6.2vw, 80px);
+  font-size: clamp(17px, 1.7vw, 27px);
+}
+
+@keyframes meera-story-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes meera-story-tumble {
+  from { opacity: 0; transform: translateY(-40%) rotate(calc(var(--turn) * -2)); }
+  to { opacity: 1; transform: rotate(var(--turn)); }
+}
+
+@media (max-width: 560px) {
+  .meera-story__image,
+  .meera-story__scene {
+    max-height: 26vh;
+  }
+
+  .meera-story__nav {
+    flex-wrap: wrap;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .meera-story.is-entering,
+  .meera-story__piece {
+    animation: none;
+  }
+}

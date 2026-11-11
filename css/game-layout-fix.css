@@ -1,0 +1,70 @@
+/* Keep the factory artwork inside the game, not repeated behind its edges. */
+body:not(.meera-booting):not(.meera-title-active) {
+  background: #10182b !important;
+  background-image: none !important;
+}
+
+body:not(.meera-booting):not(.meera-title-active)::after {
+  display: none;
+}
+
+.game-shell:not(.phase-intro) {
+  width: 100%;
+  height: 100dvh;
+  transform: none;
+}
+
+.game-shell:not(.phase-intro) .challenge-control-deck {
+  align-self: end;
+  height: calc(29dvh - 10px);
+  min-height: 0;
+  max-height: none;
+  margin: 0 auto 5px;
+  transform: none;
+}
+
+/* The desktop controls use the whole lower section while avoiding the HUD. */
+@media (min-width: 821px) {
+  .game-shell:not(.phase-intro) .challenge-control-deck {
+    width: calc(100% - 40px);
+    padding-right: clamp(40px, 5vw, 112px);
+  }
+
+  .game-shell:not(.phase-intro) .industrial-stations {
+    right: 5.5%;
+  }
+
+  .game-shell:not(.phase-intro) .challenge-control-deck .mascot-bubble {
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
+
+/* Short plain meaning under hard station words (Temper, Unmould). */
+.process-gloss {
+  display: block;
+  max-width: 115px;
+  margin-top: 2px;
+  font-size: .68rem;
+  font-weight: 700;
+  line-height: 1.1;
+  text-align: center;
+  opacity: .85;
+}
+
+.rule-next-button {
+  min-width: 200px;
+  min-height: 60px;
+  margin-top: .9rem;
+  padding: 0 32px;
+}
+
+/* While Meera speaks, the buttons that move the child on wait for her (see game-audio.js). */
+html.meera-speaking :is(.run-button, .feedback-actions .primary-button, .rule-option, .rule-next-button, .celebration-page__button, .meera-introduction__continue, .factory-tutorial__next) {
+  filter: grayscale(.65) brightness(.75) !important;
+  cursor: progress;
+}
+
+html.meera-speaking .sequence-list {
+  pointer-events: none;
+}

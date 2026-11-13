@@ -18,16 +18,6 @@
     sfx_confetti: 0.6,
   };
   const STATION_GAIN = 0.75;
-  // localStorage.factoryAudioDebug = '1' logs every sound and duck change to the console.
-  const DEBUG = (() => {
-    try {
-      return localStorage.getItem('factoryAudioDebug') === '1';
-    } catch {
-      return false;
-    }
-  })();
-  const log = (...args) => DEBUG && console.info('[audio]', ...args);
-
   // Meera's story at the start: one line per slide (data-beat on #meeraIntroduction).
   const STORY_VO = ['vo_story_01', 'vo_story_02', 'vo_story_03', 'vo_story_04', 'vo_story_05', 'vo_story_06'];
 
@@ -142,7 +132,7 @@
   // Safari only lets audio start if the AudioContext is created inside the player's first tap,
   // so the whole graph is built there (see unlock) rather than when the page loads.
   let ctx = null;
-  let master, duckNodes, buses, meter;
+  let master, duckNodes, buses;
   const createGraph = () => {
     ctx = new AudioContextClass();
     master = ctx.createGain();
@@ -156,10 +146,6 @@
     buses.vo.connect(master);
     buses.sfx.connect(duckNodes.sfx).connect(master);
     buses.bgm.connect(duckNodes.bgm).connect(master);
-    // Measures what actually reaches the speakers, for troubleshooting from the console.
-    meter = ctx.createAnalyser();
-    meter.fftSize = 2048;
-    master.connect(meter);
   };
 
   const rampParam = (param, value, timeConstant) => {
@@ -169,15 +155,14 @@
   };
 
   const setLevels = (targets, timeConstant) => {
-    log('levels', JSON.stringify(targets));
     if (!ctx) return;
     if ('duckBgm' in targets) rampParam(duckNodes.bgm.gain, targets.duckBgm, timeConstant);
     if ('duckSfx' in targets) rampParam(duckNodes.sfx.gain, targets.duckSfx, timeConstant);
     if ('scene' in targets) rampParam(buses.bgm.gain, LEVEL.bgm * targets.scene, timeConstant);
   };
 
-  // Every sound is stored once, as Ogg Opus wrapped in a small script (audio/embedded/<id>.ogg.js, built by
-  // tools/embed-audio.mjs), so the same file works over http(s) and when index.html is opened straight from disk.
+  // Every sound is stored once, as Ogg Opus wrapped in a small script (audio/embedded/<id>.ogg.js), so the same
+  // file works over http(s) and when index.html is opened straight from disk.
   // Ogg Opus plays in Chrome, Edge, Firefox, Android and Safari 18.4+. Older Safari cannot decode it: there the game
   // runs silently, and nothing waits for a sound that will never play.
   const canPlayOgg = (() => {
@@ -187,7 +172,6 @@
       return false;
     }
   })();
-  const format = canPlayOgg ? 'ogg' : 'none';
   if (!canPlayOgg) console.info('[audio] this browser cannot play Ogg Opus; the game runs without sound');
   const urlFor = (id) => `./audio/embedded/${id}.ogg.js`;
 
@@ -280,7 +264,6 @@
     pendingBytes.set(id, bytes);
   };
   const buffers = new Map();
-  let failedLoads = 0;
   const load = (id) => {
     if (!buffers.has(id)) {
       const bytes = pendingBytes.get(id) || readBytes(id);
@@ -288,7 +271,6 @@
       buffers.set(id, bytes
         .then(decode)
         .catch((error) => {
-          failedLoads += 1;
           if (canPlayOgg) console.warn('[audio] could not load', id, error);
           return null;
         }));
@@ -310,7 +292,6 @@
   // Plays one file on its bus and returns a handle, or null if it could not play.
   async function play(id, { loop = false, gain = 1, fadeIn = 0, maxDelayMs = Infinity } = {}) {
     if (!unlocked || muted) return null;
-    log('play', id);
     // Safari can leave the context 'suspended' or 'interrupted' (another tab, a call, a locked screen).
     if (ctx.state !== 'running') ctx.resume().catch(() => {});
     const requestedAt = performance.now();
@@ -545,7 +526,7 @@
   EARLY_IDS.forEach(prefetch);
 
   // ---------------------------------------------------------------------------
-  // Hooks called by the game bundle (see scripts/add-game-audio.mjs).
+  // Hooks called by the game code in index.html (window.FactoryAudio.gameSound).
   let lastArrowAt = 0;
   const gameSound = (name, detail = {}) => {
     switch (name) {
@@ -588,20 +569,12 @@
     }
   };
 
-  const debug = () => {
-    if (!ctx) return { state: 'not created (no tap yet)', unlocked, muted, fromDisk };
-    const samples = new Float32Array(meter.fftSize);
-    meter.getFloatTimeDomainData(samples);
-    const rms = Math.sqrt(samples.reduce((sum, value) => sum + value * value, 0) / samples.length);
-    return { state: ctx.state, unlocked, muted, fromDisk, format, loaded: buffers.size, failed: failedLoads, outputLevel: Number(rms.toFixed(4)) };
-  };
-
   const replayNarration = () => {
     if (lastLines.length) say([...lastLines]);
   };
   const canReplay = () => unlocked && !muted && lastLines.length > 0;
 
-  window.FactoryAudio = { gameSound, say, stopVoice, sfx, setMuted, isMuted: () => muted, replayNarration, canReplay, debug };
+  window.FactoryAudio = { gameSound, say, stopVoice, sfx, setMuted, isMuted: () => muted, replayNarration, canReplay };
 
   // ---------------------------------------------------------------------------
   // Button sounds. Only real taps count: the HUD and intro scripts forward clicks programmatically.

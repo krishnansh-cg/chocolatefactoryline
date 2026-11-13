@@ -91,7 +91,12 @@ chocolate-factory-line/
   either: the wait ends at the line's length plus a second even if the "ended" event never fires, and a
   sound file that stops arriving is abandoned after 12 s.
 - **The loading bar never blocks.** Progress is weighed by real bytes and only moves forward. Title-screen
-  pictures load first, then everything else smallest first, five at a time, so music comes last.
+  pictures load first, then every other picture, then the sounds, smallest first within each, five at a time,
+  so music comes last (at 4 Mbps: title art visible at 3.5 s, every picture in by 14 s, all done at 33 s).
+  Pictures stay in the browser's image cache under the URL the game uses, so after the bar reaches 100% the
+  game makes no network requests at all, even on a host that sends `Cache-Control: no-cache`.
+- **A picture that fails to download gets one more try.** Browsers never retry a broken `<img>` by themselves,
+  so `js/preloader.js` re-requests any picture on the page (the game's included) once, 1.5 s after it fails.
   A file that fails, stalls for 12 s or is refused (from disk the browser does not allow fetching) counts
   as done, and the game loads it the normal way later. If nothing arrives at all for 20 s, the button
   appears anyway. Sounds are handed straight to the audio engine, so nothing is downloaded twice.
@@ -110,6 +115,18 @@ the iPhone silent switch). It has not been played through in Safari yet, because
 automated after "Allow Remote Automation" is switched on in its Develop menu. The two older-Safari cases
 (no Ogg support, and Ogg that plays but will not decode) were simulated in Chromium on 2026-10-01: the game
 plays start to finish silently, with no errors and no voice-gated button left waiting.
+
+## Tested (2026-11-13)
+
+Headless Chromium (Playwright) against a server sending `Cache-Control: no-cache`: full play-through from the
+title to the finale (24 screens, every level's failure, repair and success, a wrong and a right rule answer).
+0 JavaScript errors, 0 console errors, 0 failed or 4xx/5xx requests, every visible picture decoded on every
+screen, 104 clips decoded, 0 network requests after the loading bar reached 100%. Also: 4 Mbps / 150 ms
+(bar 0 to 100% in 33 s, never backwards, START hidden until 100%); the first try at every third picture
+failing plus a music file that never answers (button at 16 s, every picture recovered by the retry); opened
+from disk (button at once, sound on). Compositing is light on every screen (at most two `will-change`
+elements, no 3D transforms or flipped faces, 43 small confetti animations at most), so nothing is at risk of
+the GPU dropping textures.
 
 ## Tested (2026-10-01)
 

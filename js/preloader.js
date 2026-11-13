@@ -2,12 +2,34 @@
   // Loading bar on the title screen. Every image and sound in js/asset-manifest.js is fetched before START MISSION
   // appears, so nothing pops in or stutters later on a slow school connection.
   // - Progress is weighed by real bytes (sizes from the files on disk, corrected by Content-Length) and never goes back.
-  // - Smallest files first, five at a time, so pictures land in the first seconds and are not stuck behind music.
+  // - Title-screen pictures first, then all other pictures, then sounds; smallest first within each, five at a time,
+  //   so pictures land in the first seconds and are never stuck behind music.
   // - Nothing can block the button: a failed, stalled or blocked transfer (file:// pages cannot fetch) counts as done,
   //   and the game then loads that file the normal way.
   // - Sounds (audio/embedded/*.ogg.js) are kept here and handed to js/game-audio.js (FactoryPreload.bytes), so they
   //   are downloaded once.
   //   Images are loaded into the browser's image cache under the exact URL the game uses.
+  // A picture whose download fails (a dropped connection, a host hiccup) stays broken: browsers never retry an
+  // <img> on their own. Every <img> on the page, including the game's, gets one more try of the same URL a moment later.
+  const retried = new WeakMap(); // img -> the src it has already retried
+  const retryImage = (image) => {
+    const src = image.getAttribute('src');
+    if (!src || src.startsWith('data:') || retried.get(image) === src) return;
+    retried.set(image, src);
+    window.setTimeout(() => {
+      if (image.getAttribute('src') !== src) return; // the screen moved on and set another picture
+      image.removeAttribute('src');
+      image.setAttribute('src', src);
+    }, 1500);
+  };
+  document.addEventListener('error', (event) => {
+    if (event.target instanceof HTMLImageElement) retryImage(event.target);
+  }, true);
+  // The title screen's pictures are above this script, so one may already have failed.
+  document.querySelectorAll('img').forEach((image) => {
+    if (image.complete && image.naturalWidth === 0) retryImage(image);
+  });
+
   const manifest = window.FactoryAssetManifest || { images: [], audio: [] };
   const root = document.documentElement;
   const loader = document.querySelector('.meera-landing__loader');
@@ -38,7 +60,9 @@
       .map((u) => u.replace(/^url\("?|"?\)$/g, ''))])
     .filter(Boolean)
     .map((u) => new URL(u, location.href).href));
-  jobs.sort((a, b) => Number(onTitle.has(new URL(b.url, location.href).href)) - Number(onTitle.has(new URL(a.url, location.href).href)));
+  // Then every other picture before any sound (pictures are what a child sees pop in; sounds are smallest first after them).
+  const rank = (job) => (onTitle.has(new URL(job.url, location.href).href) ? 0 : job.kind === 'image' ? 1 : 2);
+  jobs.sort((a, b) => rank(a) - rank(b));
   const audioBytes = new Map(); // absolute url -> Promise<ArrayBuffer|null>, registered up front so nothing is fetched twice
   jobs.forEach((job) => {
     job.received = 0;
